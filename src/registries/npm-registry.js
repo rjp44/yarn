@@ -161,8 +161,11 @@ export default class NpmRegistry extends Registry {
     const isToRegistry = this.isRequestToRegistry(requestUrl, registry) || this.requestNeedsAuth(requestUrl);
 
     // this.token must be checked to account for publish requests on non-scoped packages
-    if (this.token || (isToRegistry && (alwaysAuth || this.isScopedPackage(packageIdent)))) {
-      const authorization = this.getAuth(packageIdent);
+    if (
+      this.token ||
+      (isToRegistry && (alwaysAuth || this.isScopedPackage(packageIdent) || this.isScopedPackage(pathname)))
+    ) {
+      const authorization = this.getAuth(packageIdent) || this.getAuth(pathname);
       if (authorization) {
         headers.authorization = authorization;
       }
